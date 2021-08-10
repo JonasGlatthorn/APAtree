@@ -87,7 +87,7 @@ apa_list_enrico <-
   apa_ndiv(apa_list_enrico, dis_trait_column = "species")
 
 apa_list_enrico <-
-  apa_seg(apa_list_enrico, nsim = 3)
+  apa_seg(apa_list_enrico, nsim = 3, parallel = FALSE)
 
 # stand-level segregation index of SpeciesNDiv
 apa_list_enrico$plot_dat[, c("id_plot", "seg_species_ndiv")]
