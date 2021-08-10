@@ -1,5 +1,9 @@
 library(APAtree)
-library(tidyverse)
+library(dplyr)
+library(purrr)
+library(tibble)
+library(tidyr)
+library(testthat)
 
 # Create test dataset with some trees ------------
 test_trees <- 
