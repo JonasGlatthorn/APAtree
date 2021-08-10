@@ -1,10 +1,15 @@
 # Processing script for the figures and tables in Glatthorn 2021. All APA
 # calculations of simulations are in the script `calculate_simulation_output.R`,
-# which has to be processed first.
+# which has to be processed first. This script will remain static, it will NOT
+# be updated to potential future versions of APAtree or to future versions of
+# any of the packages APAtree depends on. The sessionInfo() output when the
+# script was processed the last time is stored in the file session_info.txt.
 
-library(tidyverse)
 library(APAtree)
-select <- dplyr::select # overridden by raster::select
+library(dplyr)
+library(purrr)
+library(tibble)
+library(tidyr)
 
 results_folder <- "./publication_results"
 sim_folder <- paste0(results_folder, "/simulation_results")
