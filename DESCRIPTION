@@ -42,6 +42,7 @@ Suggests:
     dplyr,
     purrr,
     tibble,
-    tidyr
+    tidyr,
+    openssl
 VignetteBuilder: knitr
 LazyData: true
