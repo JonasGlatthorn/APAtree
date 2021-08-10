@@ -21,7 +21,6 @@ if(!figure_folder %in% list.dirs(recursive = TRUE)){
 data(tree_enrico, package = "APAtree")
 data(plot_enrico, package = "APAtree")
 data(subplot_enrico, package = "APAtree")
-data(apa_list_enrico, package = "APAtree")
 
 # simulation data calculated in `calculate_simulation_output.R`
 load(paste0(sim_folder, "/sim_output.rda"))
@@ -48,7 +47,7 @@ color_map <-
              species_color = c("#7d5831", "#bcc746"))
 
 color_map <- 
-unique(select(st_drop_geometry(apa_list_seg$tree_dat), species)) %>% 
+  unique(select(st_drop_geometry(apa_list_seg$tree_dat), species)) %>% 
   mutate(color = case_when(species == "Fagus sylvatica" ~ "#7d5831",
                            species == "Pseudotsuga menziesii" ~ "#bcc746",
                            species == "Picea abies" ~ "#b6d7a8",
@@ -93,20 +92,20 @@ plot_limits[["5.2"]] <-
        tree_size_column = "dbh", add_plot_id_values = FALSE, add = TRUE)
   mtext("B", side = 3, adj = 0.05, font = 2, line = -1.1)
   dev.off()
-  }
+}
 
 
 # Figure S1 ---------------------------------------------------------------
 
 {
   tiff(file = paste0(figure_folder , "/figure_S1.tiff"),
-      width = 175/25.4,
-      height = 175/25.4,
-      pointsize = 12,
-      bg = NA,
-      units = "in",
-      res = 150,
-      compression = "lzw")
+       width = 175/25.4,
+       height = 175/25.4,
+       pointsize = 12,
+       bg = NA,
+       units = "in",
+       res = 150,
+       compression = "lzw")
   par(mfrow = c(4, 4))
   par(omi = c(0, 0, 0, 0))
   for(i in seq_along(plot_limits)){
@@ -118,7 +117,6 @@ plot_limits[["5.2"]] <-
                 ylim = plot_limits[[i]][c(2, 4)],
                 xaxs = "i", yaxs = "i", asp = 1)
     mtext(names(plot_limits)[i], side = 3, adj = 0.6, font = 2, line = 0, at = 0, cex = .8)
-    #plot(apa_list_seg$plot_dat$buffer_geometry[i], add = TRUE)
     plot(apa_list_seg, i,
          color_map = color_map, add_legend = FALSE,
          tree_size_column = "dbh", add_plot_id_values = FALSE, add = TRUE)
@@ -129,8 +127,9 @@ plot_limits[["5.2"]] <-
 # Figure 2 ----------------------------------------------------------------
 
 # Examplary dataset with two trees
-example_trees <- 
-  tibble(id_tree = 1:9,
+example_tree_dat <- 
+  tibble(id_tree = as.character(1:9),
+         id_plot = "A",
          competitiveness = c(4, 2.6, 4, 5, 3, 5, 3, 4, 5),
          position = c(rep("plot", 4), rep("buffer", each = 5)),
          x = c(5, 2, 4, 8, 5, -1, -2, 12, 7),
@@ -143,45 +142,30 @@ plot_poly <-
   st_polygon(x = list(matrix(c(0, 0, 0, 10, 10, 10, 10, 0, 0, 0),
                              ncol = 2, byrow = TRUE))) %>% 
   st_sfc()
-plot_line <- st_cast(plot_poly, "LINESTRING")
 
 buffer_poly <- 
   st_polygon(x = list(matrix(c(-3, -3, -3, 13, 13, 13, 13, -3, -3, -3),
                              ncol = 2, byrow = TRUE))) %>% 
   st_sfc()
-buffer_line <- st_cast(buffer_poly, "LINESTRING")
 
-buffer_donut <- st_difference(buffer_poly[[1]], plot_poly[[1]])
+example_plot_dat <- 
+  st_sf(id_plot = "A", 
+        buffer_geometry = buffer_poly,
+        border_geometry = plot_poly)
 
-# Weighted Voronoi diagrams - 1 m resolution to visualize raster
-example_apa_regular <- 
-  get_single_voronoi(core = plot_poly, 
-                         point = filter(example_trees, position == "plot"),
-                         weight_column = "competitiveness", res = 1,
-                         class_columns = "id_tree", warn = FALSE)
+
+
+# apa_list - 1 m resolution to visualize raster
+example_apa_list <-
+  apa_list(plot_dat = example_plot_dat, plot_id_column = "id_plot",
+           tree_dat = filter(example_tree_dat, position == "plot"),
+           core_column = "border_geometry",
+           weight_column = "competitiveness", res = 1, tree_id_column = "id_tree",
+           apa_polygon = TRUE)
 
 # centers of the grid cells
 grid_cells <-
-  st_as_sf(rasterToPoints(example_apa_regular[[1]], spatial = TRUE))$geometry
-
-example_apa_plus <- 
-  get_single_voronoi(core = buffer_poly, 
-                         point = example_trees,
-                         weight = "competitiveness", res = 1,
-                         class_columns = "id_tree", warn = FALSE)
-
-# Add the APA-polygons to the tree dataset
-example_trees <- 
-  example_trees %>% 
-  left_join(as_tibble(polygonize_class(example_apa_regular$id_tree)),
-            by = "id_tree") %>% 
-  rename(apa_poly_regular = "geometry") %>% 
-  left_join(as_tibble(polygonize_class(example_apa_plus$id_tree)),
-            by = "id_tree") %>% 
-  rename(apa_poly_plus = "geometry") %>% 
-  left_join(as_tibble(polygonize_class(example_apa_regular) %>% filter(critical == 1))) %>% 
-  rename(apa_poly_regular_crit = "geometry") %>% 
-  select(-critical)
+  st_as_sf(rasterToPoints(example_apa_list$plot_dat$apa_map[[1]], spatial = TRUE))$geometry
 
 {
   svg(filename = paste0(figure_folder , "/figure_2_R.svg"),
@@ -200,11 +184,8 @@ example_trees <-
   plot.window(xlim = xlim, ylim = ylim, asp = 1, xaxs = "i", yaxs = "i")
   plot(plot_poly, add = TRUE, lwd = 6, border = gray(.7), xpd = NA)
   plot(grid_cells, add = TRUE, pch = 16, cex = .3)
-  example_trees %>% 
-    filter(position == "plot") %>% 
-    pluck("apa_poly_regular") %>% 
-    plot(add = TRUE, lwd = 2)
-  example_trees %>% 
+  plot(example_apa_list$tree_dat$apa_polygon, add = TRUE, lwd = 2)
+  example_tree_dat %>% 
     filter(position == "plot") %>% 
     {symbols(x = st_coordinates(.$stem_position), add = TRUE, pch = 16,
              circles = .$competitiveness/10, bg = color_map$color[c(1, 1, 2, 2)], inches = FALSE)}
@@ -214,32 +195,26 @@ example_trees <-
   plot.new()
   plot.window(xlim = xlim, ylim = ylim, asp = 1, yaxs = "i", xaxs = "i")
   plot(plot_poly, add = TRUE, lwd = 6, border = gray(.7), xpd = NA)
-  example_trees %>% 
-    filter(position == "plot") %>% 
-    pluck("apa_poly_regular") %>% 
-    plot(add = TRUE, lwd = 2, col = paste0(substr(color_map$color[c(2, 2, 1, 1)], 0, 7), "44"))
-  example_trees %>% 
+  plot(example_apa_list$tree_dat$apa_polygon, add = TRUE, lwd = 2,
+       col = paste0(substr(color_map$color[c(2, 2, 1, 1)], 0, 7), "44"))
+  example_tree_dat %>% 
     filter(position == "plot") %>% 
     {symbols(x = st_coordinates(.$stem_position), add = TRUE, pch = 16,
              circles = .$competitiveness/10, bg = color_map$color[c(2, 2, 1, 1)], inches = FALSE)}
   mtext("B", side = 3, adj = -0.08, font = 2, line = -.9)
   
   boundaries <-
-    sf::st_intersection(example_trees$apa_poly_regular[1], example_trees$apa_poly_regular[2:4])
+    st_intersection(example_apa_list$tree_dat$apa_polygon[1],
+                    example_apa_list$tree_dat$apa_polygon[2:4])
   boundaries <-
     st_sf(focal_tree = 1, neighbor_tree = 2:4, boundaries)
   plot(boundaries$boundaries[1:3], col = color_map$color[2], add = TRUE, lwd = 4)
   plot(boundaries$boundaries[2:3], col = color_map$color[1], lty = 3, add = TRUE, lwd = 4)
   
-  
   dev.off()
-  }
+}
 
 # The Figure as plotted by R was modified with inkscape for the publication
-
-round(st_distance(grid_cells[53], example_trees$stem_position[1:2]), 2)
-round(example_trees$competitiveness[1:2], 2)
-round(st_distance(grid_cells[53], example_trees$stem_position[1:2])/example_trees$competitiveness[1:2], 2)
 
 # Figure 4 ----------------------------------------------------------------
 
@@ -577,10 +552,20 @@ apa_prop_stand <-
   st_drop_geometry() %>%
   select(id_plot, species_ndiv, seg_species_ndiv, height_ndiv, seg_height_ndiv)
 
+apa_list_enrico <-
+  APAtree::apa_list(plot_dat = plot_enrico,
+                    tree_dat = tree_enrico,
+                    plot_id_column = "id_plot",
+                    tree_id_column = "id_tree",
+                    weight_column = "crown_radius_95",
+                    res = .1,
+                    agg_class_column = "species",
+                    subplot_dat = list(subplot = subplot_enrico),
+                    subplot_id_column = c(subplot = "id_subplot"),
+                    apa_polygon = FALSE,
+                    apa_properties = "apa_size")
 apa_prop_beech <- 
-  apa_list_enrico %>% 
-  pluck("subplot_dat", "subplot", "species") %>% 
-  st_drop_geometry() %>% 
+  apa_list_enrico$subplot_dat$subplot$species %>% 
   filter(grepl("plot", id_subplot), species == "Fagus sylvatica") %>% 
   select(id_plot, beech_prop_apa = apa_size_prop)
 
@@ -599,14 +584,3 @@ table_1_formatted <-
   mutate_at(c("dbh", "height"), paste0, ")")
 
 writexl::write_xlsx(table_1_formatted, paste0(figure_folder, "/table_1_formatted.xlsx"))
-
-
-# Additional text references ---------------------------------------------------------------------
- 
-# Simpson diversity of plot 8.2
-apa_list_enrico$subplot_dat$subplot$subplot %>% 
-  filter(id_subplot == "8.2_plot") %>% 
-  pluck("species_pdiv") %>% 
-  round(2)
-
-
