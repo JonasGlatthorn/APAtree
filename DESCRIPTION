@@ -39,6 +39,9 @@ Suggests:
     rmarkdown,
     knitr,
     testthat,
-    tidyverse
+    dplyr,
+    purrr,
+    tibble,
+    tidyr
 VignetteBuilder: knitr
 LazyData: true
