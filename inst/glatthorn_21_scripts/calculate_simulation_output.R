@@ -8,7 +8,7 @@ data(plot_enrico, package = "APAtree")
 sf::st_geometry(plot_enrico) <- "border_geometry"
 
 
-# Create a folder to store tables
+# Create a folder to store results
 results_folder <- "./publication_results"
 if(!results_folder %in% list.dirs(recursive = TRUE)){
   dir.create(results_folder)
@@ -26,7 +26,7 @@ apa_list_enrico <-
                     tree_dat = tree_enrico,
                     plot_id_column = "id_plot",
                     tree_id_column = "id_tree",
-                    core_colulmn = "border_geometry",
+                    core_column = "border_geometry",
                     buffer_column = "buffer_geometry",
                     weight_column = "crown_radius_95",
                     res = .1,
@@ -37,6 +37,5 @@ apa_list_enrico_seg <-
   APAtree::apa_seg(apa_list_enrico, nsim = 1000,
           save_folder = sim_folder,
           overwrite = TRUE,
-          restore_previous = FALSE,
           parallel = TRUE,
           no_cores = 3, iseed = 42)
