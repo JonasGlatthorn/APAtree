@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/*
+dev/*
+temp/*
+publication_results/*
+figures/*
+tables/*
+src/*.o
+src/*.so
+src/*.dll
+*.rda
+*.csv
+*.svg
+inst/doc
