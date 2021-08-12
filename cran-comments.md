@@ -1,4 +1,14 @@
+## Resubmission
+Thanks a lot for your comments. In this version I have
+
+* adapted DESCRIPTION (title length reduced, replaced backquote with single quote, use single quote for package names)
+* Replaced 'cat()' with 'message()'. Exceptions: print function and when using 'cat()' to write to a file.
+* Ensured that user's par settings are restored 'on.exit()' in 'plot.apa_list()'.
+* Ensured that user's par settings are restored in examples and vignettes.
+* Reduced maximum number of cores to 2 in example code.
+
 ## Test environments
+Tested again before resubmission
 * local ubuntu 18.04, R 4.1.0
 * R-hub with default settings on platforms:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
