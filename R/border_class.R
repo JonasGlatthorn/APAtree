@@ -50,12 +50,12 @@ border_class.list <-
       rst_names <- seq_along(rst_names)
     }
     output_list <- names_to_list(rst_names)
-    cat("Looking up border classes:\n")
+    message("Looking up border classes:")
     for(rst_i in rst_names){
-      cat(rst_i, "  ")
+      message(rst_i, "  ", appendLF = FALSE)
       output_list[[rst_i]] <- border_class(rst[[rst_i]], ...)
     }
-    cat("\n")
+    message("")
     output <- do.call(rbind, output_list)
     rownames(output) <- output[[1]]
     output

@@ -53,7 +53,7 @@ apa_list_enrico$plot_dat[, c("id_plot", "apa_size_total", "apa_size_prop")]
 head(apa_list_enrico$species[, c("id_plot", "species", "apa_size_total", "apa_size_prop")])
 }
 \references{
-{ Glatthorn, Jonas (accepted): A spatially explicit index for
+{ Glatthorn, Jonas (accepted). A spatially explicit index for
 tree species or trait diversity at neighborhood and stand level. Ecological Indicators.}
 
 { Gspaltl, M., Sterba, H., & O’hara, K. L. (2012). The relationship

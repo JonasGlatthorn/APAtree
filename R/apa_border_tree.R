@@ -14,7 +14,7 @@ apa_border_tree <- function(apa_list){
   if(apa_config$core_column != apa_config$buffer_column){
     stop("To assign border trees, 'core' and 'buffer' polygons have to be identical.")
   }
-  cat("\nIdentifying border trees.\n")
+  message("\nIdentifying border trees.")
   border_tree <- border_class(apa_list$plot_dat$apa_map)
   apa_list$tree_dat$border_tree <- 
     border_tree[apa_list$tree_dat[[apa_config$tree_id_column]], 2]

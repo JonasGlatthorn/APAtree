@@ -281,15 +281,18 @@ seg_randomize <-
            keep_columns = keep_columns, start_time = NULL){
     {
       if(!is.null(save_folder)){
-        sink(file = paste0(save_folder, "/", Sys.getpid() , "_log.txt"), append = TRUE)
+        proc_file <- file(paste0(save_folder, "/", Sys.getpid() , "_log.txt"),
+                          open = "at")
+        sink(proc_file, type = "message")
       }
-      cat("\n----------- SIMULATION", sim_i, " -----------\n")
+      message("\n----------- SIMULATION ", sim_i, " -----------")
       sim_output_i <- randomize_apa_list(apa_list, buffer_separate = buffer_separate,
                                     save_folder = if(save_simulations){save_folder}else{NULL},
                                     suffix = sim_i)
       if(!is.null(save_folder)){
-        sink()
-        cat(sim_i, "\n", sep = "", file = paste0(save_folder, "/", Sys.getpid(), "_temp.txt"), append = TRUE)
+        sink(type = "message")
+        close(proc_file)
+        cat(sim_i, "\n", file = paste0(save_folder, "/", Sys.getpid(), "_temp.txt"), append = TRUE)
         temp_files <- grep("temp.txt", dir(save_folder, full.names = TRUE), value = TRUE)
         sim_proc <- as.integer(c(lapply(temp_files, readLines), recursive = TRUE))
         proc_n <- length(sim_proc)

@@ -34,7 +34,7 @@ apa_size <-
       as.vector(stats::na.omit(unique(c(apa_config$apa_properties,
                                         c("apa_size", "apa_size_total", "apa_size_prop", "critical")))))
     apa_map <- apa_list$plot_dat$apa_map
-    cat("\nAggregating APA-sizes:\n")
+    message("\nAggregating APA-sizes:")
     if(apa_config$core_column == apa_config$buffer_column){
       top_level_plot <- NULL
       top_level_id_column <- NULL
@@ -50,12 +50,12 @@ apa_size <-
                             edge_correction = edge_correction)
     subplot_list <- apa_list$subplot_dat
     for(subplot_i in names(apa_config$subplot_id_column)){
-      cat("`", subplot_i, "` - aggregating APA-sizes:  ", sep = "")
+      message("`", subplot_i, "` - aggregating APA-sizes:  ", appendLF = FALSE)
       subplot_dat_i <- apa_list$subplot_dat[[subplot_i]]
       subplot_list[[subplot_i]] <- apa_size_calc(subplot_dat_i, apa_config, apa_map, subplot = subplot_dat_i[[subplot_i]],
                                                  edge_correction = edge_correction, subplot_id_column = apa_config$subplot_id_column[subplot_i])
     }
-    cat("\n")
+    message("")
     output$subplot_dat <- subplot_list
     output <- new_apa_list(output, apa_config = apa_config)
     output

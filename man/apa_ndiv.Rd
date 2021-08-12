@@ -91,6 +91,6 @@ apa_list_enrico$plot_dat[, c("id_plot", "species_ndiv")]
 head(apa_list_enrico$species[, c("id_plot", "species", "species_ndiv")])
 }
 \references{
-{ Glatthorn, Jonas (accepted): A spatially explicit index for
+{ Glatthorn, Jonas (accepted). A spatially explicit index for
 tree species or trait diversity at neighborhood and stand level. Ecological Indicators.}
 }

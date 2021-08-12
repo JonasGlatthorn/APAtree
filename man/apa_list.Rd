@@ -168,7 +168,7 @@ apa_list_enrico <-
 apa_list_enrico
 }
 \references{
-{ Glatthorn, Jonas (accepted): A spatially explicit index for
+{ Glatthorn, Jonas (accepted). A spatially explicit index for
 tree species or trait diversity at neighborhood and stand level. Ecological Indicators.}
 
 { Gspaltl, M., Sterba, H., & O’hara, K. L. (2012). The relationship

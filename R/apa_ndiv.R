@@ -113,14 +113,14 @@ apa_ndiv <- function(apa_list,
     stats::na.omit(apa_list$tree_dat[[apa_config$tree_id_column]][apa_list$tree_dat$border_tree])
   output <- NULL
   for(trait_i in names(trait_dat)){
-    cat("\nAggregating `", trait_i, "` neighborhood diversity:\n", sep = "")
+    message(paste0("\nAggregating `", trait_i, "` neighborhood diversity:"), appendLF = FALSE)
     output_i <- apa_ndiv_calc(unclass(apa_list), apa_config, apa_map,
                               trait_dat = trait_dat[[trait_i]], subplot = top_level_plot,
                               subplot_id_column = top_level_id_column, pdiv = pdiv,
                               edge_correction = edge_correction, border_tree_id = border_tree_id)
     subplot_list <- apa_list$subplot_dat
     for(subplot_i in names(apa_config$subplot_id_column)){
-      cat("`", subplot_i, "` - aggregating neighborhood diversity:  ", sep = "")
+      message(paste0("`", subplot_i, "` - aggregating neighborhood diversity:  "), appendLF = FALSE)
       subplot_dat_i <- apa_list$subplot_dat[[subplot_i]]
       subplot_list[[subplot_i]] <- 
         apa_ndiv_calc(subplot_dat_i, apa_config, apa_map,
@@ -130,7 +130,7 @@ apa_ndiv <- function(apa_list,
                       pdiv = pdiv, edge_correction = edge_correction,
                       border_tree_id = border_tree_id)
     }
-    cat("\n")
+    message("")
     output_i$subplot_dat <- subplot_list
     output_i <- 
       lapply_deep(output_i, .what = "data.frame",

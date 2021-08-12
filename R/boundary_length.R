@@ -141,13 +141,12 @@ boundary_length.list <-
     }
     output_list <- names_to_list(common_label)
     for(relation_i in common_label){
-      cat(relation_i, "  ")
+      message(relation_i, "  ", appendLF = FALSE)
       output_list[[relation_i]] <- 
         boundary_length(rst = rst_list[[relation_i]],
                         subplot = subplot_list[[relation_i]],
                         ...)
     }
-    cat("\n")
     output <- named_list_to_df(output_list, plot_id_column = plot_id_column)
     if(inherits(output, "sf")){
       # bug in multiple geometry columns: changing sf_column when rbinding

@@ -56,9 +56,9 @@ get_voronoi_list <-
     
     # Generating single APA-maps and store them in a list
     output_list <- names_to_list(plot_id_values)
-    cat("Generating APA-maps:\n")
+    message("Generating APA-maps:")
     for(relation_i in plot_id_values){
-      cat(relation_i, "  ")
+      message(relation_i, "  ", appendLF = FALSE)
       core_subset <- subset(core, core[[plot_id_column]] == relation_i)
       single_core <- sf::st_geometry(core_subset)
       single_buffer <- core_subset[[buffer_column]]
@@ -73,6 +73,6 @@ get_voronoi_list <-
           res = res,
           warn = FALSE)
     }
-    cat("\n")
+    message("")
     output_list
   }

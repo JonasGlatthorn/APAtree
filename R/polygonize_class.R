@@ -32,12 +32,12 @@ polygonize_class.list <-
     }
     polygon_list <- names_to_list(rst_names)
     for(rst_i in rst_names){
-      cat(rst_i, "  ")
+      message(rst_i, "  ", appendLF = FALSE)
       polygon_list[[rst_i]] <- polygonize_class(rst[[rst_i]], layer, ...)
       polygon_list[[rst_i]][[plot_id_column]] <- rst_i
       polygon_list[[rst_i]] <- polygon_list[[rst_i]][c(3, 1, 2)]
     }
-    cat("\n")
+    message("")
     do.call(rbind, polygon_list)
   }
 

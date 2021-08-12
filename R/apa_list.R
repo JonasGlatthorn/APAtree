@@ -218,7 +218,7 @@ apa_list <-
                                     apa_polygon = FALSE)
     
     if(apa_polygon){
-      cat("\nStarting polygonization:\n")
+      message("\nStarting polygonization:")
       apa_list <- apa_add_polygon(apa_list)
     }
     
@@ -534,9 +534,9 @@ apa_add_agg_class <-
       apa_list$plot_dat$apa_map <- apa_map_column
     }
     agg_dat <- names_to_list(agg_class_column)
-    cat("\nAdding aggregation classes:\n")
+    message("\nAdding aggregation classes:")
     for(class_i in agg_class_column){
-      cat(class_i, "\n")
+      message(class_i)
       keep_columns <- c(apa_config_old$plot_id_column, class_i)
       agg_dat[[class_i]] <- 
         sf::st_drop_geometry(apa_list$tree_dat)[, keep_columns, drop = FALSE]
@@ -546,7 +546,7 @@ apa_add_agg_class <-
     apa_config_new <- apa_config_old
     apa_config_new$agg_class_column <- 
       as.vector(stats::na.omit(c(apa_config_old$agg_class_column,
-                          agg_class_column)))
+                                 agg_class_column)))
     apa_list <- new_apa_list(apa_list, 
                              add_agg_to_apa_list = agg_dat,
                              apa_config = apa_config_new)
@@ -589,129 +589,129 @@ apa_add_subplot_dat <-
            subplot_id_column,
            radius = NULL,
            apa_polygon = attr(apa_list, "apa_config")$apa_polygon){
-  if(length(subplot_dat) == 0){
-    return(apa_list)
-  }
-  force(apa_polygon)
-  apa_list <- apa_drop_polygon(apa_list)
-  apa_config_old <- attr(apa_list, "apa_config")
-  plot_id_column <- apa_config_old$plot_id_column
-  if(!is.na(apa_config_old$apa_properties[1])){
-    stop("Addition of subplots is only possible before calculating APA-properties. 
+    if(length(subplot_dat) == 0){
+      return(apa_list)
+    }
+    force(apa_polygon)
+    apa_list <- apa_drop_polygon(apa_list)
+    apa_config_old <- attr(apa_list, "apa_config")
+    plot_id_column <- apa_config_old$plot_id_column
+    if(!is.na(apa_config_old$apa_properties[1])){
+      stop("Addition of subplots is only possible before calculating APA-properties. 
          Use `apa_drop_properties()` first.")
-  }
-  if(is.null(radius) || is.na(radius)){
-    radius <- apa_config_old$radius
-  }
-  
-  check_subplot_exists <-
-    is.logical(all.equal(sort(names(subplot_dat)), 
-                         sort(names(subplot_id_column))))
-  if(!check_subplot_exists){
-    stop("Names of datasets in `subplot_dat` and names of `subplot_id_column`",
-         "have to be identical.")
-  }
-  subplot_columns <- lapply(subplot_dat, names)
-  check_plot_id_column<-
-    c(lapply(subplot_columns, FUN = `%in%`, x = plot_id_column), recursive = TRUE)
-  if(!all(check_plot_id_column)){
-    stop("`plot_id_column` (" , plot_id_column, ") has to be present in all subplot datasets.\n")
-  }
-  
-  check_subplot_sf <- sapply(subplot_dat, inherits, "sf")
-  if(!all(check_subplot_sf)){
-    stop("All elements in `subplot_dat` have to be `sf`-objects.")
-  }
-  
-  check_subplot_point <- 
-    any(sapply(lapply(subplot_dat, sf::st_geometry), inherits, "sfc_POINT"))
-  if(check_subplot_point & is.na(radius)){
-    stop("`radius` has to be specified if a `subplot`` dataset contains point data.")
-  }
-  if(!is.na(apa_config_old$radius) && radius != apa_config_old$radius){
-    stop("One `apa_list` can't have a different `radius` for several point datasets in `subplot_dat` (not yet implemented).")
-  }
-  
-  if(!is.null(apa_config_old$subplot_id_column)){
-    check_subplot_id_duplicates <- 
-      intersect(names(apa_config_old$subplot_id_column),
-                names(subplot_id_column))
-    if(length(check_subplot_id_duplicates) > 0){
-      stop("`", paste(check_subplot_id_duplicates, collapse = "`, `"),
-           "` is/are already subplot-dataset in `apa_list`.")
     }
-  }
-  output_list <- names_to_list(names(subplot_id_column))
-  cat("\nAdding subplot datasets:\n")
-  for(subplot_i in names(subplot_id_column)){
-    cat("`", subplot_i, "` - setting up datasets  \n", sep = "")
-    if(!subplot_id_column[subplot_i] %in% names(subplot_dat[[subplot_i]])){
-      stop("`", subplot_id_column[subplot_i], "' is not a column of `subplot_dat$",
-           subplot_i, "`,")
+    if(is.null(radius) || is.na(radius)){
+      radius <- apa_config_old$radius
     }
-    subplot_dat[[subplot_i]] <- 
-      subset(subplot_dat[[subplot_i]], subplot_dat[[subplot_i]][[plot_id_column]] %in% apa_config_old$plot_id_values)
-    output_list[[subplot_i]] <- list()
-    output_list[[subplot_i]][[subplot_i]] <- subplot_dat[[subplot_i]]
-    subplot_intersect <- subplot_dat[[subplot_i]][c(plot_id_column, subplot_id_column[subplot_i])]
-    if(is.null(subplot_intersect)){
-      stop("'", subplot_i, "' not found in 'subplot_dat'.")
+    
+    check_subplot_exists <-
+      is.logical(all.equal(sort(names(subplot_dat)), 
+                           sort(names(subplot_id_column))))
+    if(!check_subplot_exists){
+      stop("Names of datasets in `subplot_dat` and names of `subplot_id_column`",
+           "have to be identical.")
     }
-    if(inherits(sf::st_geometry(subplot_intersect), "sfc_POINT")){
-      if(is.null(radius) || is.na(radius)){
-        stop("Please specify neighborhood radius for point data in `subplot_dat` via `apa_config = list(radius == xxx)`.")
+    subplot_columns <- lapply(subplot_dat, names)
+    check_plot_id_column<-
+      c(lapply(subplot_columns, FUN = `%in%`, x = plot_id_column), recursive = TRUE)
+    if(!all(check_plot_id_column)){
+      stop("`plot_id_column` (" , plot_id_column, ") has to be present in all subplot datasets.\n")
+    }
+    
+    check_subplot_sf <- sapply(subplot_dat, inherits, "sf")
+    if(!all(check_subplot_sf)){
+      stop("All elements in `subplot_dat` have to be `sf`-objects.")
+    }
+    
+    check_subplot_point <- 
+      any(sapply(lapply(subplot_dat, sf::st_geometry), inherits, "sfc_POINT"))
+    if(check_subplot_point & is.na(radius)){
+      stop("`radius` has to be specified if a `subplot`` dataset contains point data.")
+    }
+    if(!is.na(apa_config_old$radius) && radius != apa_config_old$radius){
+      stop("One `apa_list` can't have a different `radius` for several point datasets in `subplot_dat` (not yet implemented).")
+    }
+    
+    if(!is.null(apa_config_old$subplot_id_column)){
+      check_subplot_id_duplicates <- 
+        intersect(names(apa_config_old$subplot_id_column),
+                  names(subplot_id_column))
+      if(length(check_subplot_id_duplicates) > 0){
+        stop("`", paste(check_subplot_id_duplicates, collapse = "`, `"),
+             "` is/are already subplot-dataset in `apa_list`.")
       }
     }
-    sf::st_agr(subplot_intersect) <- "constant"
-    output_list[[subplot_i]]$tree_dat <- 
-      class_area(apa_list$plot_dat$apa_map, subplot = subplot_intersect,
-                     plot_id_column = plot_id_column,
-                     layer = stats::na.omit(c(apa_config_old$tree_id_column,
-                                       apa_config_old$agg_class_column)),
-                     radius = radius)
-    match_idx <- match_by(output_list[[subplot_i]]$tree_dat, apa_list$tree_dat, by = apa_config_old$tree_id_column)
-    subplot_tree_geo <- sf::st_geometry(apa_list$tree_dat)[match_idx]
-    output_list[[subplot_i]]$tree_dat[[attr(apa_list$tree_dat, "sf_column")]] <- 
-      subplot_tree_geo
-    output_list[[subplot_i]]$tree_dat <- sf::st_as_sf(output_list[[subplot_i]]$tree_dat)
-    output_list[[subplot_i]]$tree_dat$area <- NULL
-    if(!is.na(apa_config_old$agg_class_column)[1]){
-      for(class_i in apa_config_old$agg_class_column){
-        agg_class_data <- apa_list[[class_i]]
-        if(inherits(agg_class_data, "sf")){
-          agg_class_data <- sf::st_drop_geometry(agg_class_data)
+    output_list <- names_to_list(names(subplot_id_column))
+    message("\nAdding subplot datasets:")
+    for(subplot_i in names(subplot_id_column)){
+      message("`", subplot_i, "` - setting up datasets")
+      if(!subplot_id_column[subplot_i] %in% names(subplot_dat[[subplot_i]])){
+        stop("`", subplot_id_column[subplot_i], "' is not a column of `subplot_dat$",
+             subplot_i, "`,")
+      }
+      subplot_dat[[subplot_i]] <- 
+        subset(subplot_dat[[subplot_i]], subplot_dat[[subplot_i]][[plot_id_column]] %in% apa_config_old$plot_id_values)
+      output_list[[subplot_i]] <- list()
+      output_list[[subplot_i]][[subplot_i]] <- subplot_dat[[subplot_i]]
+      subplot_intersect <- subplot_dat[[subplot_i]][c(plot_id_column, subplot_id_column[subplot_i])]
+      if(is.null(subplot_intersect)){
+        stop("'", subplot_i, "' not found in 'subplot_dat'.")
+      }
+      if(inherits(sf::st_geometry(subplot_intersect), "sfc_POINT")){
+        if(is.null(radius) || is.na(radius)){
+          stop("Please specify neighborhood radius for point data in `subplot_dat` via `apa_config = list(radius == xxx)`.")
         }
-        agg_class_list <- split(agg_class_data, agg_class_data[[plot_id_column]])
-        agg_class_list <- lapply(agg_class_list, `[`, class_i)
-        subplot_intersect_no_sf <- sf::st_drop_geometry(subplot_intersect)
-        subplot_intersect_list <- split(subplot_intersect_no_sf, subplot_intersect_no_sf[[plot_id_column]])
-        subplot_intersect_list <- lapply(subplot_intersect_list, lapply, unique)
-        common_relations <- check_common_relations(subplot_intersect_list, agg_class_list)
-        joined_list <- mapply(FUN = c, subplot_intersect_list[common_relations],
-                              agg_class_list[common_relations])
-        full_combinations <- apply(joined_list, 2, expand.grid, stringsAsFactors = FALSE)
-        full_combinations <- do.call("rbind", full_combinations)
-        full_combinations <- full_combinations[do.call(order, full_combinations), ]
-        
-        output_list[[subplot_i]][[class_i]] <- full_combinations
-        
+      }
+      sf::st_agr(subplot_intersect) <- "constant"
+      output_list[[subplot_i]]$tree_dat <- 
+        class_area(apa_list$plot_dat$apa_map, subplot = subplot_intersect,
+                   plot_id_column = plot_id_column,
+                   layer = stats::na.omit(c(apa_config_old$tree_id_column,
+                                            apa_config_old$agg_class_column)),
+                   radius = radius)
+      match_idx <- match_by(output_list[[subplot_i]]$tree_dat, apa_list$tree_dat, by = apa_config_old$tree_id_column)
+      subplot_tree_geo <- sf::st_geometry(apa_list$tree_dat)[match_idx]
+      output_list[[subplot_i]]$tree_dat[[attr(apa_list$tree_dat, "sf_column")]] <- 
+        subplot_tree_geo
+      output_list[[subplot_i]]$tree_dat <- sf::st_as_sf(output_list[[subplot_i]]$tree_dat)
+      output_list[[subplot_i]]$tree_dat$area <- NULL
+      if(!is.na(apa_config_old$agg_class_column)[1]){
+        for(class_i in apa_config_old$agg_class_column){
+          agg_class_data <- apa_list[[class_i]]
+          if(inherits(agg_class_data, "sf")){
+            agg_class_data <- sf::st_drop_geometry(agg_class_data)
+          }
+          agg_class_list <- split(agg_class_data, agg_class_data[[plot_id_column]])
+          agg_class_list <- lapply(agg_class_list, `[`, class_i)
+          subplot_intersect_no_sf <- sf::st_drop_geometry(subplot_intersect)
+          subplot_intersect_list <- split(subplot_intersect_no_sf, subplot_intersect_no_sf[[plot_id_column]])
+          subplot_intersect_list <- lapply(subplot_intersect_list, lapply, unique)
+          common_relations <- check_common_relations(subplot_intersect_list, agg_class_list)
+          joined_list <- mapply(FUN = c, subplot_intersect_list[common_relations],
+                                agg_class_list[common_relations])
+          full_combinations <- apply(joined_list, 2, expand.grid, stringsAsFactors = FALSE)
+          full_combinations <- do.call("rbind", full_combinations)
+          full_combinations <- full_combinations[do.call(order, full_combinations), ]
+          
+          output_list[[subplot_i]][[class_i]] <- full_combinations
+          
+        }
       }
     }
+    message("")
+    apa_config_new <- apa_config_old
+    apa_config_new$radius = radius
+    apa_config_new$subplot_id_column <- c(apa_config_old$subplot_id_column, subplot_id_column)
+    apa_config_new$subplot_id_column <- apa_config_new$subplot_id_column[!is.na(apa_config_new$subplot_id_column)]
+    
+    apa_list <- 
+      new_apa_list(apa_list, add_subplot_to_apa_list = output_list, 
+                   apa_config = apa_config_new)
+    if(apa_polygon){
+      apa_list <- apa_add_polygon(apa_list)
+    }
+    apa_list
   }
-  cat("\n")
-  apa_config_new <- apa_config_old
-  apa_config_new$radius = radius
-  apa_config_new$subplot_id_column <- c(apa_config_old$subplot_id_column, subplot_id_column)
-  apa_config_new$subplot_id_column <- apa_config_new$subplot_id_column[!is.na(apa_config_new$subplot_id_column)]
-  
-  apa_list <- 
-    new_apa_list(apa_list, add_subplot_to_apa_list = output_list, 
-                 apa_config = apa_config_new)
-  if(apa_polygon){
-    apa_list <- apa_add_polygon(apa_list)
-  }
-  apa_list
-}
 
 #' Add \code{POLYGON}-columns to an \code{apa_list}
 #'
@@ -721,7 +721,7 @@ apa_add_subplot_dat <-
 apa_add_polygon <- function(apa_list){
   apa_config <- attr(apa_list, "apa_config")
   apa_map_column <- apa_list$plot_dat$apa_map
-  cat("`tree_dat` - polygonizing APA-patches:\n")
+  message("`tree_dat` - polygonizing APA-patches:")
   tree_apa_polygon <-
     polygonize_class(apa_map_column, layer = apa_config$tree_id_column,
                      plot_id_column = apa_config$plot_id_column)
@@ -736,7 +736,7 @@ apa_add_polygon <- function(apa_list){
   
   if(!is.na(apa_config$agg_class_column)[1]){
     for(class_i in apa_config$agg_class_column){
-      cat("`", class_i, "` - polygonizing APA-patches:  ", sep = "")
+      message("`", class_i, "` - polygonizing APA-patches:  ", appendLF = FALSE)
       agg_polygon_i <- 
         polygonize_class(rst = apa_map_column, layer = class_i,
                          plot_id_column = apa_config$plot_id_column,
@@ -947,7 +947,7 @@ update_apa <- function(apa_list, apa_config_new = NULL, force = NULL, no_polygon
     apa_list_updated <- apa_drop_subplot(apa_list_updated)
     apa_list_updated <- apa_drop_agg_class(apa_list_updated)
     apa_list_updated <- apa_drop_properties(apa_list_updated)
-    cat("Initializing aggregation class datasets.\n")
+    message("Initializing aggregation class datasets.")
     apa_list_updated <- apa_add_agg_class(apa_list_updated,
                                           agg_class_column = apa_config_updated$agg_class_column,
                                           apa_polygon = FALSE)
@@ -957,7 +957,7 @@ update_apa <- function(apa_list, apa_config_new = NULL, force = NULL, no_polygon
     apa_list_updated <- apa_drop_subplot(apa_list_updated)
     apa_list_updated <- apa_drop_properties(apa_list_updated)
     
-    cat("Initializing subplot datasets.\n")
+    message("Initializing subplot datasets.")
     subplot_dat_original <- 
       lapply(apa_drop_properties(apa_list)$subplot_dat, `[[`, 1)
     apa_list_updated <-
