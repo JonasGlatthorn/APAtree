@@ -33,9 +33,11 @@ apa_list_enrico <-
                     apa_polygon = TRUE,
                     apa_properties = c("pdiv"),
                     dis_trait_column = list("species", "height"))
+
 apa_list_enrico_seg <- 
   APAtree::apa_seg(apa_list_enrico, nsim = 1000,
           save_folder = sim_folder,
           overwrite = TRUE,
           parallel = TRUE,
-          no_cores = 3, iseed = 42)
+          no_cores = 2, # only using 2 cores, increase to reduce processing time
+          iseed = 42)
