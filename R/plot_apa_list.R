@@ -68,7 +68,7 @@ plot.apa_list <-
            add_subplot = FALSE,
            add_plot_id_values = TRUE,
            ...){
-    oldpar < par(no.readonly = TRUE)
+    oldpar <- graphics::par(no.readonly = TRUE)
     on.exit(par(oldpar))            
     x <- subset(x, subset)
     old_mfrow_mai <- graphics::par()[c("mfrow", "mai")]
