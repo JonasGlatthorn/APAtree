@@ -20,6 +20,10 @@ if(!figure_folder %in% list.dirs(recursive = TRUE)){
   dir.create(figure_folder)
 }
 
+# store old par settings
+
+oldpar <- par(no.readonly = TRUE)
+
 # data loading ---------------------------------------------
 
 # package data
@@ -526,6 +530,9 @@ apa_list_seg$plot_dat %>%
   {cor(.$seg_height_ndiv, .$height_pdiv)} %>% 
   round(2)
 
+# restore old par settings
+par(oldpar)
+
 # Table 1 -------------------------------------------------------
 
 plot_area_tbl <- 
@@ -589,3 +596,4 @@ table_1_formatted <-
   mutate_at(c("dbh", "height"), paste0, ")")
 
 writexl::write_xlsx(table_1_formatted, paste0(figure_folder, "/table_1_formatted.xlsx"))
+

@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+oldpar <- par(no.readonly = TRUE)
 ```
 
 ## Introduction
@@ -213,5 +214,6 @@ example_apa_list_6 <-
 example_apa_list_6$species[, c("species", "species_ndiv")]
 ```
 
-
-
+```{r, include = FALSE}
+par(oldpar)
+```
