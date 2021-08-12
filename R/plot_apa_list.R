@@ -68,8 +68,10 @@ plot.apa_list <-
            add_subplot = FALSE,
            add_plot_id_values = TRUE,
            ...){
+    oldpar < par(no.readonly = TRUE)
+    on.exit(par(oldpar))            
     x <- subset(x, subset)
-    old_par <- graphics::par()[c("mfrow", "mai")]
+    old_mfrow_mai <- graphics::par()[c("mfrow", "mai")]
     apa_config <- attr(x, "apa_config")
     if(add){
       add_legend <- FALSE
@@ -263,7 +265,7 @@ plot.apa_list <-
       }
     }
     if(!add){
-      graphics::par(old_par)
+      graphics::par(old_mfrow_mai)
     }
     invisible(NULL)
   }
