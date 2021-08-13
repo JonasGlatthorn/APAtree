@@ -24,5 +24,6 @@ There were no ERRORs or WARNINGs.
 There was 1 NOTE on all R-hub platforms except macOS and on win-builder:
 
   * Possibly misspelled words in DESCRIPTION
+  * Found the following (possibly) invalid DOIs: DOI: 10.1093/forestry/cps052
   
-The words in the DESCRIPTION Files were checked and they are all spelled correctly.
+The words in the DESCRIPTION Files were checked and they are all spelled correctly. I have no idea why the DOI should be invalid. It is specified exactly as suggested in (https://cran.r-project.org/web/packages/submission_checklist.html) and the DOI is correct.
