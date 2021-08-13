@@ -119,6 +119,7 @@
 #'   data at subplot-level are stored here.
 #' 
 #' @template ref_glatthorn_2021
+#' @template ref_roemisch_1995
 #' @template ref_gspaltl_2012
 #' 
 #' @example examples/example_apa_list.R

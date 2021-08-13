@@ -18,7 +18,7 @@ oldpar <- par(no.readonly = TRUE)
 
 ## Introduction
 
-The `APAtree`-package calculates maps of the the 'area potentially available' to trees (APA-maps) out of tree inventory data from one or more research plots. The APA is a measure for the growing space of trees that sums up to the stand area (Gspaltl et al. 2012). In this package the approach to derive APA-maps from Gspaltl et al. (2012) that is based on a rasterized version of weighted Voronoi diagrams is implemented. In this approach, the complete stand area is rasterized into a regular grid and each grid cell is assigned to the closest tree, weighted by a tree trait that approximates the trees competitive ability (e.g., the crown radius). Based on APA-maps, several APA-properties that describe tree proportions and diversity of complete forest stands or of neighborhoods around individual trees are implemented in this package (Gspaltl. et al. 2012, Glatthorn 2021). This Vignette is a step by step user guide about how to use the most important functions of the `APAtree`-package. For methodological details please consult the original references.
+The `APAtree`-package calculates maps of the the 'area potentially available' to trees (APA-maps) out of tree inventory data from one or more research plots. The APA is a measure for the growing space of trees that sums up to the stand area (Gspaltl et al. 2012, Römisch 1995). This is done by computing a rasterized version of 'weighted voronoi diagrams' using an approximation of the trees competitive ability (e.g., crown radius, leaf area) as weight.  Based on APA-maps, several APA-properties that describe tree proportions and diversity of complete forest stands or of neighborhoods around individual trees are implemented in this package (Gspaltl. et al. 2012, Glatthorn 2021). This Vignette is a step by step user guide about how to use the most important functions of the `APAtree`-package. For methodological details please consult the original references.
 
 ## Creating some example data
 
@@ -217,3 +217,14 @@ example_apa_list_6$species[, c("species", "species_ndiv")]
 ```{r, include = FALSE}
 par(oldpar)
 ```
+## References
+
+Glatthorn, Jonas (accepted). A spatially explicit index for
+tree species or trait diversity at neighborhood and stand level. Ecological Indicators.
+
+Gspaltl, M., Sterba, H., & O'hara, K. L. (2012). The relationship
+between available area efficiency and area exploitation index in an even-aged
+coast redwood (Sequoia sempervirens) stand. Forestry, 85(5), 567-577.
+
+Römisch,K. (1995) Durchmesserwachstum und ebene Bestandesstruktur am Beispiel der Kiefernversuchsfläche Markersbach. In Deutscher Verband forstl.
+Forschungsanstalten, Sektion Biometrie und Informatik. Gottfried Hempel (ed.) Tagung Tharanth/Grillenburg, Vol. 8, pp. 84–103.
