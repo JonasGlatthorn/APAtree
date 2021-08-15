@@ -13,7 +13,7 @@ The `area potentially available` of trees is calculated from
 Currently, only installation from github is possible
 ```r
 library(devtools)
-install_github("s-spatial/sf")
+install_github("JonasGlatthorn/APAtree")
 ```
 
 ## Documentation
