@@ -1,3 +1,28 @@
+# Release version 1.0.1
+
+## Release summary 
+
+Fixed minor issues with compliance of the APAtree-package to CRAN policy and cross-platform compatibility (mainly in src/MAKEVARS, many thanks to Brian Ripley for pointing this out). 
+
+## Test environments
+* local ubuntu 18.04, R 4.1.0
+* R-hub with default settings on platforms:
+  * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
+  * Ubuntu Linux 20.04.1 LTS, R-release, GCC
+  * Fedora Linux, R-devel, clang, gfortran
+  * macOS 10.13.6 High Sierra, R-release, CRAN's setup
+* win-builder (devel)
+
+## Test results
+
+There was 1 NOTE on win-builder and on all R-hub platforms except macOS:
+
+  * Found the following (possibly) invalid DOIs: DOI: 10.1093/forestry/cps052
+  
+The DOI is correct.
+____
+# Release version 1.0.0
+
 ## Resubmission
 Thanks a lot for your comments. In this version I have
 
