@@ -17,9 +17,12 @@ Fixed minor issues with compliance of the APAtree-package to CRAN policy and cro
 
 There was 1 NOTE on win-builder and on all R-hub platforms except macOS:
 
+  * Possibly misspelled words in DESCRIPTION:
+  Glatthorn (17:4)
+  NDiv (16:74)
   * Found the following (possibly) invalid DOIs: DOI: 10.1093/forestry/cps052
   
-The DOI is correct.
+All words in DESCRIPTION are spelled correctly and the DOI is correct as well.
 ____
 # Release version 1.0.0
 
